@@ -1,10 +1,32 @@
+let selectedRegion = null;
+let countries= null;
+const container = document.querySelector('.countries-grid');
+
 document.addEventListener('DOMContentLoaded', () => {
     const dropdownWrapper = document.querySelector('.dropdown-wrapper');
     const dropdownHeader = dropdownWrapper.querySelector('.dropdown-header');
     const dropdownBody = dropdownWrapper.querySelector('.dropdown-body');
-
-    dropdownHeader.addEventListener('click', () => {
+    //open the dropdown
+    dropdownHeader.addEventListener('click', (event) => {
         dropdownWrapper.classList.toggle('open');
+    });
+    //check if need to close the dropdown
+    document.addEventListener('click', (event) => {
+        if (dropdownWrapper.classList.contains('open') && !dropdownWrapper.contains(event.target)) {
+            dropdownWrapper.classList.remove('open');
+        }
+    });
+    //get the region that choosen
+    dropdownBody.addEventListener('click', (event) => {
+        const clickedElement = event.target;
+
+        if(clickedElement.tagName === 'LI')
+        {
+            selectedRegion= clickedElement.dataset.region;
+            console.log(selectedRegion);
+        }
+        // Re-render countries based on selected region
+        renderCountries(countries, container);
     });
   });
 
@@ -64,10 +86,31 @@ function createCountryCard(country) {
 }
   
 function renderCountries(countries, container) {
-    countries.forEach(country => {
+    // Clear the container before rendering
+    container.innerHTML = '';
+
+    // Filter the countries based on the selected region
+    let filteredCountries = countries;
+    
+    if (selectedRegion && selectedRegion !== 'all') {
+        filteredCountries = countries.filter(country => 
+            country.region.toLowerCase() === selectedRegion.toLowerCase()
+        );
+    }
+
+    // Render the filtered (or all) countries
+    filteredCountries.forEach(country => {
         const card = createCountryCard(country);
         container.appendChild(card);
     });
+
+    console.log('Selected region:', selectedRegion);
+    console.log('Filtered countries:', filteredCountries);
+
+    // countries.forEach(country => {
+    //     const card = createCountryCard(country);
+    //     container.appendChild(card);
+    // });
 }
 
 const fetchCountriesData = (url) => {
@@ -83,14 +126,10 @@ const fetchCountriesData = (url) => {
   fetchCountriesData('./CountriesData.json')
     .then((data) => {
         console.log('Fetched data:', data);
-        const countries = data;
-        const container = document.querySelector('.countries-grid');
-        countries.forEach(country => {
-            const card = createCountryCard(country);
-            container.appendChild(card);
-    });
-
+        countries = data;
+        renderCountries(countries, container);
     })
+
     .catch((error) => {
       console.error('Error fetching countries data:', error.message);
     });
