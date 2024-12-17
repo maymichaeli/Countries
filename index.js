@@ -81,7 +81,16 @@ function createCountryCard(country) {
     // Add the flag and info containers to the main card
     card.appendChild(flagDiv);
     card.appendChild(infoDiv);
- 
+    
+    // card.addEventListener('click',()=>{
+    //     location.href = "./details.html";
+    // });
+    card.addEventListener('click', () => {
+        const url = `details.html?name=${encodeURIComponent(country.name)}&region=${encodeURIComponent(country.region)}&population=${country.population}&capital=${encodeURIComponent(country.capital)}&flag=${encodeURIComponent(country.flag)}`;
+        window.location.href = url;
+    });
+    
+
     return card;
 }
   
@@ -91,7 +100,7 @@ function renderCountries(countries, container) {
 
     // Filter the countries based on the selected region
     let filteredCountries = countries;
-    
+
     if (selectedRegion && selectedRegion !== 'all') {
         filteredCountries = countries.filter(country => 
             country.region.toLowerCase() === selectedRegion.toLowerCase()
