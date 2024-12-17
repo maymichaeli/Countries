@@ -1,37 +1,3 @@
-// // const loader = document.getElementsByClassName('loader');
-// // loader.style.display = 'block';
-// console.log('details.js loaded');
-
-// const loader = document.querySelector('.loader');
-// loader.style.display = 'none';
-
-// function getQueryParams() {
-//     const params = new URLSearchParams(window.location.search);
-//     return {
-//         name: params.get('name'),
-//         region: params.get('region'),
-//         population: params.get('population'),
-//         capital: params.get('capital'),
-//         flag: params.get('flag')
-//     };
-// }
-
-// const countryDetails = getQueryParams();
-// console.log(countryDetails);
-
-// const detailsContainer = document.querySelector('.country-details');
-
-// detailsContainer.innerHTML = `
-//     <h2>${countryDetails.name}</h2>
-//     <div>
-//         <img src="${countryDetails.flag}" alt="${countryDetails.name} Flag">
-//     </div>
-//     <p><strong>Region:</strong> ${countryDetails.region}</p>
-//     <p><strong>Population:</strong> ${countryDetails.population}</p>
-//     <p><strong>Capital:</strong> ${countryDetails.capital}</p>
-// `;
-
-
 console.log('details.js loaded');
 
 const loader = document.querySelector('.loader');

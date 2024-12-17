@@ -115,11 +115,6 @@ function renderCountries(countries, container) {
 
     console.log('Selected region:', selectedRegion);
     console.log('Filtered countries:', filteredCountries);
-
-    // countries.forEach(country => {
-    //     const card = createCountryCard(country);
-    //     container.appendChild(card);
-    // });
 }
 
 const fetchCountriesData = (url) => {
