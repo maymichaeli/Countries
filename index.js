@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-function createCountryCard(country) {
+const createCountryCard=(country)=> {
     // Create the main <a> element
     const card = document.createElement('a');
     card.className = 'country scale-effect';
@@ -57,25 +57,9 @@ function createCountryCard(country) {
     countryTitle.textContent = country.name;
   
     infoDiv.appendChild(countryTitle);
-  
-    // Create the ul
-    const ulList = document.createElement('ul');
-    ulList.className = 'country-brief';
-  
-    const populationItem = document.createElement('li');
-    populationItem.innerHTML = `<strong>Population: </strong>${country.population}`;
-  
-    const regionItem = document.createElement('li');
-    regionItem.innerHTML = `<strong>Region: </strong>${country.region}`;
-  
-    const capitalItem = document.createElement('li');
-    capitalItem.innerHTML = `<strong>Capital: </strong>${country.capital}`;
-  
-    ulList.appendChild(populationItem);
-    ulList.appendChild(regionItem);
-    ulList.appendChild(capitalItem);
-  
-    // Add the ul to the infoDiv
+
+    // Create the ul using a reusable function
+    const ulList = createCountryDetailsList(country);
     infoDiv.appendChild(ulList);
   
     // Add the flag and info containers to the main card
@@ -86,15 +70,43 @@ function createCountryCard(country) {
     //     location.href = "./details.html";
     // });
     card.addEventListener('click', () => {
-        const url = `details.html?name=${encodeURIComponent(country.name)}&region=${encodeURIComponent(country.region)}&population=${country.population}&capital=${encodeURIComponent(country.capital)}&flag=${encodeURIComponent(country.flag)}`;
+        const baseUrl = 'details.html';
+        const url = `${baseUrl}?name=${encodeURIComponent(country.name)}&region=${encodeURIComponent(country.region)}&population=${country.population}&capital=${encodeURIComponent(country.capital)}&flag=${encodeURIComponent(country.flag)}`;
         window.location.href = url;
     });
     
 
     return card;
 }
+
+// Helper function to create the country details list
+const createCountryDetailsList = (country) => {
+    const ulList = document.createElement('ul');
+    ulList.className = 'country-brief';
   
-function renderCountries(countries, container) {
+    // Define the details dynamically
+    const details = [
+      { label: 'Population', value: country.population },
+      { label: 'Region', value: country.region },
+      { label: 'Capital', value: country.capital },
+    ];
+  
+    details.forEach((detail) => {
+      const li = document.createElement('li');
+  
+      const strongElement = document.createElement('strong');
+      strongElement.textContent = `${detail.label}: `;
+  
+      li.appendChild(strongElement);
+      li.appendChild(document.createTextNode(detail.value));
+      ulList.appendChild(li);
+    });
+  
+    return ulList;
+  };
+
+
+const renderCountries=(countries, container)=> {
     // Clear the container before rendering
     container.innerHTML = '';
 
@@ -138,3 +150,31 @@ const fetchCountriesData = (url) => {
       console.error('Error fetching countries data:', error.message);
     });
 
+
+
+const searchInput = document.querySelector('.search-input');
+const countriesGrid = document.querySelector('.countries-grid');
+
+searchInput.addEventListener('input', (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+
+    // Filter the countries based on the search term
+    const filteredCountries = countries.filter(country => {
+    return (
+        country.name.toLowerCase().includes(searchTerm) ||  // Match name
+        country.region.toLowerCase().includes(searchTerm) || // Match region
+        country.capital.toLowerCase().includes(searchTerm) || // Match capital
+        country.population.toString().includes(searchTerm) // Match population (convert to string)
+    );
+    });
+
+    // Clear the current display
+    countriesGrid.innerHTML = '';
+
+    // Render the filtered countries
+    if (filteredCountries.length > 0) {
+    renderCountries(filteredCountries, countriesGrid);
+    } else {
+    countriesGrid.innerHTML = '<p>No matching countries found.</p>';
+    }
+});
